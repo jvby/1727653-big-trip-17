@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
 * Студент: [Василий Беляйкин](https://up.htmlacademy.ru/ecmascript/17/user/1727653).
-* Наставник: `Неизвестно`.
+* Наставник: [Алексей Хабиров](https://htmlacademy.ru/profile/alex_khab).
 
 ---
 
