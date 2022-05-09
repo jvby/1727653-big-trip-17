@@ -1,34 +1,45 @@
 import {createElement} from '../render.js';
 import {humanizePointDate, getEventDuration} from '../utils.js';
+import { getOffers } from '../mock/point.js';
 
 const createPointTemplate = (point) => {
-  const { basePrice, dateFrom, dateTo, destination, isFavorite, offers, type } = point;
+  const {
+    basePrice,
+    dateFrom,
+    dateTo,
+    destination,
+    isFavorite,
+    offers,
+    type
+  } = point;
 
   const eventDate = humanizePointDate(dateFrom, 'YYYY-MM-DD');
-
   const eventDay = humanizePointDate(dateFrom, 'MMM D');
-
   const eventStartDate = humanizePointDate(dateFrom, 'YYYY-MM-DDTHH:mm');
-
   const eventStartTime = humanizePointDate(dateFrom, 'HH:mm');
-
   const eventEndDate = humanizePointDate(dateTo, 'YYYY-MM-DDTHH:mm');
-
   const eventEndTime = humanizePointDate(dateTo, 'HH:mm');
-
   const eventDuration = getEventDuration(dateFrom, dateTo);
 
   const favoritePoint = isFavorite
     ? 'event__favorite-btn--active'
     : '';
 
-  const getOffers = () => offers.map((offer) =>
-    `<li class="event__offer">
-      <span class="event__offer-title">${offer.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
-    </li>`)
-    .join('');
+  const getEventOffers = () => {
+
+    const pointTypeOffer = getOffers().find((offer) => offer.type === type);
+    const offersForRender = offers.map((offerID) => (
+      pointTypeOffer.offers.find((offer) => offer.id === offerID)
+    ));
+
+    return offersForRender.map((offer) =>
+      `<li class="event__offer">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+      </li>`)
+      .join('');
+  };
 
   return (
     `<li class="trip-events__item">
@@ -51,7 +62,7 @@ const createPointTemplate = (point) => {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${getOffers()}
+          ${getEventOffers()}
         </ul>
         <button class="event__favorite-btn ${favoritePoint}" type="button">
           <span class="visually-hidden">Add to favorite</span>

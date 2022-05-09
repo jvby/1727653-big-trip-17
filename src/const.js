@@ -1,4 +1,4 @@
-const CITYS = [
+const CITIES = [
   'Chamonix',
   'Moscow',
   'Paris',
@@ -43,4 +43,4 @@ const TITLES = [
   'Switch to business',
 ];
 
-export {TYPES, DESCRIPTIONS, CITYS, TITLES};
+export {TYPES, DESCRIPTIONS, CITIES, TITLES};

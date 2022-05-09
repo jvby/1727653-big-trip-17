@@ -1,5 +1,6 @@
 import {createElement} from '../render.js';
 import {humanizePointDate} from '../utils.js';
+import { getOffers } from '../mock/point.js';
 
 const createPointEditTemplate = (point) => {
   const { basePrice, dateFrom, dateTo, destination, offers, type } = point;
@@ -8,16 +9,23 @@ const createPointEditTemplate = (point) => {
 
   const eventEndDate = humanizePointDate(dateTo, 'YY/MM/DD HH:mm');
 
-  const getOffers= () => offers.map((offer) =>
-    `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-      <label class="event__offer-label" for="event-offer-train-1">
-        <span class="event__offer-title">${offer.title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer.price}</span>
-      </label>
-    </div>`)
-    .join('');
+  const getEventOffers = () => {
+
+    const pointTypeOffer = getOffers().find((offer) => offer.type === type);
+
+    return pointTypeOffer.offers.map((offer) => {
+      const checked = offers.includes(offer.id) ? 'checked' : '';
+      return (
+        `<div class="event__offer-selector">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train" ${checked}>
+          <label class="event__offer-label" for="event-offer-train-1">
+            <span class="event__offer-title">${offer.title}</span>
+            &plus;&euro;&nbsp;
+            <span class="event__offer-price">${offer.price}</span>
+          </label>
+        </div>`);
+    }).join('');
+  };
 
   return (
     `<li class="trip-events__item">
@@ -121,7 +129,7 @@ const createPointEditTemplate = (point) => {
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
             <div class="event__available-offers">
-              ${getOffers()}
+              ${getEventOffers()}
             </div>
           </section>
 
