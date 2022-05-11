@@ -9,6 +9,6 @@ const siteListElement = document.querySelector('.trip-events');
 render(new FilterView(), siteFilterElement);
 
 const pointsModel = new PointsModel();
-const tripPresenter = new TripPresenter();
+const tripPresenter = new TripPresenter(siteListElement, pointsModel);
 
-tripPresenter.init(siteListElement, pointsModel);
+tripPresenter.init();
