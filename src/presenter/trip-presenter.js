@@ -2,6 +2,7 @@ import SortView from '../view/sort-view.js';
 import PointEditView from '../view/point-edit-view.js';
 import PointView from '../view/point-view.js';
 import PointsList from '../view/points-list-view.js';
+import EmptyPointsListView from '../view/empty-points-list-view.js';
 import {render} from '../render.js';
 
 export default class TripPresenter {
@@ -63,11 +64,13 @@ export default class TripPresenter {
   };
 
   #renderList = () => {
-    render(new SortView(), this.#tripContainer);
-    render(this.#tripList, this.#tripContainer);
+    if (this.#tripPoints.length < 1) {
+      render(new EmptyPointsListView(), this.#tripContainer);
+    } else {
+      render(new SortView(), this.#tripContainer);
+      render(this.#tripList, this.#tripContainer);
 
-    for (let i = 0; i < this.#tripPoints.length; i++) {
-      this.#renderPoint(this.#tripPoints[i]);
+      this.#tripPoints.forEach((point) =>  this.#renderPoint(point));
     }
   };
 
