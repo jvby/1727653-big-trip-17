@@ -1,6 +1,6 @@
-import {createElement} from '../render.js';
 import {humanizePointDate} from '../utils.js';
-import { getOffers } from '../mock/point.js';
+import {getOffers} from '../mock/point.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createPointEditTemplate = (point) => {
   const { basePrice, dateFrom, dateTo, destination, offers, type } = point;
@@ -143,12 +143,12 @@ const createPointEditTemplate = (point) => {
   );
 };
 
-export default class PointEditView {
+export default class PointEditView extends AbstractView{
 
   #point = null;
-  #element = null;
 
   constructor(point) {
+    super();
     this.#point = point;
   }
 
@@ -156,15 +156,23 @@ export default class PointEditView {
     return createPointEditTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setRollupClickHandler = (callback) => {
+    this._callback.rollupClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupClickHandler);
+  };
 
-    return this.#element;
-  }
+  #rollupClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.rollupClick();
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  setSubmitClickHandler = (callback) => {
+    this._callback.submitClick = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#submitClickHandler);
+  };
+
+  #submitClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.submitClick();
+  };
 }
