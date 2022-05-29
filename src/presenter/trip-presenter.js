@@ -4,16 +4,19 @@ import PointEditView from '../view/point-edit-view.js';
 import PointView from '../view/point-view.js';
 import PointsList from '../view/points-list-view.js';
 import EmptyPointsListView from '../view/empty-points-list-view.js';
+import FilterView from '../view/filter-view.js';
 
 export default class TripPresenter {
 
   #tripContainer = null;
+  #filterContainer = null;
   #pointsModel = null;
   #tripPoints = [];
   #tripList = new PointsList();
 
-  constructor (tripContainer, pointsModel) {
+  constructor (tripContainer, pointsModel, filterContainer) {
     this.#tripContainer = tripContainer;
+    this.#filterContainer = filterContainer;
     this.#pointsModel = pointsModel;
   }
 
@@ -66,6 +69,7 @@ export default class TripPresenter {
     if (this.#tripPoints.length < 1) {
       render(new EmptyPointsListView(), this.#tripContainer);
     } else {
+      render(new FilterView(), this.#filterContainer);
       render(new SortView(), this.#tripContainer);
       render(this.#tripList, this.#tripContainer);
 
