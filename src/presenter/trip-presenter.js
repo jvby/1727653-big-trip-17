@@ -1,10 +1,10 @@
-import {render, replace} from '../framework/render.js';
+import {render} from '../framework/render.js';
 import SortView from '../view/sort-view.js';
-import PointEditView from '../view/point-edit-view.js';
-import PointView from '../view/point-view.js';
+import PointPresenter from './point-presenter.js';
 import PointsList from '../view/points-list-view.js';
 import EmptyPointsListView from '../view/empty-points-list-view.js';
 import FilterView from '../view/filter-view.js';
+import {updateItem} from '../utils.js';
 
 export default class TripPresenter {
 
@@ -13,6 +13,7 @@ export default class TripPresenter {
   #pointsModel = null;
   #tripPoints = [];
   #tripList = new PointsList();
+  #pointPresenter = new Map();
 
   constructor (tripContainer, pointsModel, filterContainer) {
     this.#tripContainer = tripContainer;
@@ -27,42 +28,19 @@ export default class TripPresenter {
 
   };
 
+  #handlePointChange = (updatedPoint) => {
+    this.#tripPoints = updateItem(this.#tripPoints, updatedPoint);
+    this.#pointPresenter.get(updatedPoint.id).init(updatedPoint);
+  };
+
+  #handleModeChange = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.resetView());
+  };
+
   #renderPoint = (point) => {
-    const pointComponent = new PointView(point);
-    const pointEditComponent = new PointEditView(point);
-
-    const replacePointToEditForm = () => {
-      replace(pointEditComponent, pointComponent);
-    };
-
-    const replaceEditFormToPoint = () => {
-      replace(pointComponent, pointEditComponent);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceEditFormToPoint();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    pointComponent.setRollupClickHandler(() => {
-      replacePointToEditForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    pointEditComponent.setSubmitClickHandler(() => {
-      replaceEditFormToPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    pointEditComponent.setRollupClickHandler(() => {
-      replaceEditFormToPoint();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    render(pointComponent, this.#tripList.element);
+    const pointPresenter = new PointPresenter(this.#tripList.element, this.#handlePointChange, this.#handleModeChange);
+    pointPresenter.init(point);
+    this.#pointPresenter.set(point.id, pointPresenter);
   };
 
   #renderList = () => {
@@ -75,6 +53,11 @@ export default class TripPresenter {
 
       this.#tripPoints.forEach((point) =>  this.#renderPoint(point));
     }
+  };
+
+  #clearPointList = () => {
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.clear();
   };
 
 }
