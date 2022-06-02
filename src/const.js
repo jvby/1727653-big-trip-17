@@ -43,4 +43,9 @@ const TITLES = [
   'Switch to business',
 ];
 
-export {TYPES, DESCRIPTIONS, CITIES, TITLES};
+const MODES = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
+export {TYPES, DESCRIPTIONS, CITIES, TITLES, MODES};
