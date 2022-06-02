@@ -4,7 +4,7 @@ import PointPresenter from './point-presenter.js';
 import PointsList from '../view/points-list-view.js';
 import EmptyPointsListView from '../view/empty-points-list-view.js';
 import FilterView from '../view/filter-view.js';
-import {updateItem, sortPointTime, sortPointPrice} from '../utils.js';
+import {updateItem, sortPointsByTime, sortPointsByPrice, sortPointsByDate} from '../utils.js';
 import {SORT_TYPE} from '../const.js';
 
 
@@ -28,7 +28,7 @@ export default class TripPresenter {
   }
 
   init = () => {
-    this.#tripPoints = [...this.#pointsModel.points];
+    this.#tripPoints = [...this.#pointsModel.points].sort(sortPointsByDate);
     this.#sourcedBoardPoints = [...this.#pointsModel.points];
 
     this.#renderList();
@@ -54,10 +54,10 @@ export default class TripPresenter {
   #sortPoints = (sortType) => {
     switch (sortType) {
       case SORT_TYPE.TIME:
-        this.#tripPoints.sort(sortPointTime);
+        this.#tripPoints.sort(sortPointsByTime);
         break;
       case SORT_TYPE.PRICE:
-        this.#tripPoints.sort(sortPointPrice);
+        this.#tripPoints.sort(sortPointsByPrice);
         break;
       default:
         this.#tripPoints = [...this.#sourcedBoardPoints];

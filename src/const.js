@@ -49,7 +49,7 @@ const MODE = {
 };
 
 const SORT_TYPE = {
-  DEFAULT: 'default',
+  DAY: 'day',
   TIME: 'time',
   PRICE: 'price',
 };
