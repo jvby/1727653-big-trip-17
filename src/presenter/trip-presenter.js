@@ -73,7 +73,7 @@ export default class TripPresenter {
 
     this.#sortPoints(sortType);
     this.#clearPointList();
-    this.#tripPoints.forEach((point) =>  this.#renderPoint(point));
+    this.#renderPointList();
   };
 
   #renderSort = () => {
@@ -85,6 +85,10 @@ export default class TripPresenter {
     render(this.#filterComponent, this.#filterContainer);
   };
 
+  #renderPointList = () => {
+    this.#tripPoints.forEach((point) =>  this.#renderPoint(point));
+  };
+
   #renderList = () => {
     if (this.#tripPoints.length < 1) {
       render(new EmptyPointsListView(), this.#tripContainer);
@@ -93,7 +97,7 @@ export default class TripPresenter {
       this.#renderSort();
       render(this.#tripList, this.#tripContainer);
 
-      this.#tripPoints.forEach((point) =>  this.#renderPoint(point));
+      this.#renderPointList();
     }
   };
 
