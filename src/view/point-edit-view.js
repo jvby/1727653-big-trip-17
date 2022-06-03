@@ -156,7 +156,7 @@ export default class PointEditView extends AbstractView{
     return createPointEditTemplate(this.#point);
   }
 
-  setRollupClickHandler = (callback) => {
+  setEditRollupClickHandler = (callback) => {
     this._callback.rollupClick = callback;
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupClickHandler);
   };
@@ -166,7 +166,7 @@ export default class PointEditView extends AbstractView{
     this._callback.rollupClick();
   };
 
-  setSubmitClickHandler = (callback) => {
+  setEditSubmitClickHandler = (callback) => {
     this._callback.submitClick = callback;
     this.element.querySelector('form').addEventListener('submit', this.#submitClickHandler);
   };

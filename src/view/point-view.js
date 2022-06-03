@@ -1,4 +1,3 @@
-//import {createElement} from '../framework/render.js';
 import {humanizePointDate, getEventDuration} from '../utils.js';
 import {getOffers} from '../mock/point.js';
 import AbstractView from '../framework/view/abstract-view.js';
@@ -15,6 +14,11 @@ const createPointTemplate = (point) => {
     type
   } = point;
 
+  const pointTypeOffer = getOffers().find((offer) => offer.type === type);
+  const offersForRender = offers.map((offerID) => (
+    pointTypeOffer.offers.find((offer) => offer.id === offerID)
+  ));
+
   const eventDate = humanizePointDate(dateFrom, 'YYYY-MM-DD');
   const eventDay = humanizePointDate(dateFrom, 'MMM D');
   const eventStartDate = humanizePointDate(dateFrom, 'YYYY-MM-DDTHH:mm');
@@ -27,21 +31,14 @@ const createPointTemplate = (point) => {
     ? 'event__favorite-btn--active'
     : '';
 
-  const getEventOffers = () => {
+  const getEventOffers = () => offersForRender.map((offer) =>
+    `<li class="event__offer">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </li>`)
+    .join('');
 
-    const pointTypeOffer = getOffers().find((offer) => offer.type === type);
-    const offersForRender = offers.map((offerID) => (
-      pointTypeOffer.offers.find((offer) => offer.id === offerID)
-    ));
-
-    return offersForRender.map((offer) =>
-      `<li class="event__offer">
-        <span class="event__offer-title">${offer.title}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer.price}</span>
-      </li>`)
-      .join('');
-  };
 
   return (
     `<li class="trip-events__item">
