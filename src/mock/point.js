@@ -2,6 +2,8 @@ import {getRandomInteger} from '../utils.js';
 import {CITIES, DESCRIPTIONS, TYPES, TITLES} from '../const.js';
 import dayjs from 'dayjs';
 
+let offersList = [];
+
 //Возвращаем случайный элемент массива
 const getRandomArrayElement = (data) => {
 
@@ -46,12 +48,16 @@ const generateOffer = () => {
 };
 
 //Отдаем список предложений с привязкой к типам
-const getOffers = () => TYPES.map((typeName) => (
-  {
-    type: typeName,
-    offers: generateOffer(),
-  })
-);
+const getOffers = () => offersList;
+
+const createOffers = () => {
+  offersList = TYPES.map((typeName) => (
+    {
+      type: typeName,
+      offers: generateOffer(),
+    }));
+};
+
 
 //Генерируем дату начала точки маршрута
 const generateDateFrom = (id) => {
@@ -80,9 +86,9 @@ const generatePoint = (id) => {
     destination: generateDestination(),
     id: id,
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    offers: [ 1, 2, 3],
+    offers: [1,2,3],
     type: getRandomArrayElement(TYPES),
   };
 };
 
-export {generatePoint, getOffers};
+export {generatePoint, getOffers, getRandomArrayElement, createOffers};
