@@ -49,6 +49,5 @@ const updateItem = (items, update) => {
 const sortPointsByTime = (timeA, timeB) => dayjs(timeA.dateFrom).diff(dayjs(timeA.dateTo)) > dayjs(timeB.dateFrom).diff(dayjs(timeB.dateTo)) ? 1 : -1;
 const sortPointsByPrice = (priceA, priceB) => priceA.basePrice < priceB.basePrice ? 1 : -1;
 const sortPointsByDate = (dateA, dateB) => dateA.dateFrom > dateB.dateFrom ? 1 : -1;
-const sortOffers = (offerA, offerB) => offerA > offerB ? 1 : -1;
 
-export {getRandomInteger, humanizePointDate, getEventDuration, updateItem, sortPointsByTime, sortPointsByPrice, sortPointsByDate, sortOffers};
+export {getRandomInteger, humanizePointDate, getEventDuration, updateItem, sortPointsByTime, sortPointsByPrice, sortPointsByDate};
