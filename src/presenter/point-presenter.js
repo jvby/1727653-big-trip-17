@@ -78,6 +78,7 @@ export default class PointPresenter {
   #onEscKeyDown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceEditFormToPoint();
     }
   };
@@ -86,11 +87,13 @@ export default class PointPresenter {
     this.#replacePointToEditForm();
   };
 
-  #handleSubmitClick = () => {
+  #handleSubmitClick = (point) => {
+    this.#changeData(point);
     this.#replaceEditFormToPoint();
   };
 
   #handleRollupEditClick = () => {
+    this.#pointEditComponent.reset(this.#point);
     this.#replaceEditFormToPoint();
   };
 

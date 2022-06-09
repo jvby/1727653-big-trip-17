@@ -54,4 +54,16 @@ const SORT_TYPE = {
   PRICE: 'price',
 };
 
-export {TYPES, DESCRIPTIONS, CITIES, TITLES, MODE, SORT_TYPE};
+const EVENT_TYPE = {
+  TAXI: 'taxi',
+  BUS: 'bus',
+  TRIAN: 'train',
+  SHIP: 'ship',
+  DRIVE: 'drive',
+  FLIGHT: 'flight',
+  CHECK_IN: 'check-in',
+  SIGHTSEEING: 'sightseeing',
+  RESTAURANT: 'restaurant',
+};
+
+export {TYPES, DESCRIPTIONS, CITIES, TITLES, MODE, SORT_TYPE, EVENT_TYPE};
