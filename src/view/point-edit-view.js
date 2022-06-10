@@ -2,6 +2,9 @@ import {humanizePointDate, getRandomInteger} from '../utils.js';
 import {getOffers, getRandomArrayElement} from '../mock/point.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {DESCRIPTIONS, TYPES, CITIES} from '../const.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+
 
 const createPointEditTemplate = (point) => {
   const { basePrice, dateFrom, dateTo, destination, offers, type } = point;
@@ -9,6 +12,8 @@ const createPointEditTemplate = (point) => {
   const eventStartDate = humanizePointDate(dateFrom, 'YY/MM/DD HH:mm');
 
   const eventEndDate = humanizePointDate(dateTo, 'YY/MM/DD HH:mm');
+
+  const isOffers = offers.length > 0 ? '' : 'visually-hidden';
 
   const getDestinations = () => CITIES.map((city) => `<option value="${city}"></option>`).join('');
 
@@ -155,7 +160,7 @@ const createPointEditTemplate = (point) => {
           <section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-            <div class="event__available-offers">
+            <div class="event__available-offers" ${isOffers}>
               ${getEventOffers()}
             </div>
           </section>
@@ -167,12 +172,15 @@ const createPointEditTemplate = (point) => {
 };
 
 export default class PointEditView extends AbstractStatefulView{
-
+  #startDatepicker = null;
+  #endDatepicker = null;
 
   constructor(point) {
     super();
     this._state = PointEditView.parsePointToState(point);
     this.setInnerHandlers();
+    this.#setStartDatepicker();
+    this.#setEndDatepicker();
   }
 
   get template() {
@@ -210,6 +218,8 @@ export default class PointEditView extends AbstractStatefulView{
 
   _restoreHandlers = () => {
     this.setInnerHandlers();
+    this.#setStartDatepicker();
+    this.#setEndDatepicker();
     this.element.querySelector('form').addEventListener('submit', this.#submitClickHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupClickHandler);
   };
@@ -256,6 +266,44 @@ export default class PointEditView extends AbstractStatefulView{
   #submitClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.submitClick(PointEditView.parsePointToState(this._state));
+  };
+
+  #startDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+  #endDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
+  };
+
+  #setStartDatepicker = () => {
+    this.#startDatepicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        'time_24hr': true,
+        defaultDate: this._state.dateFrom,
+        onChange: this.#startDateChangeHandler,
+      },
+    );
+  };
+
+  #setEndDatepicker = () => {
+    this.#endDatepicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        'time_24hr': true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateTo,
+        onChange: this.#endDateChangeHandler,
+      },
+    );
   };
 
   static parsePointToState = (point) => ({...point});
