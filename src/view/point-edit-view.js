@@ -13,9 +13,10 @@ const createPointEditTemplate = (point) => {
 
   const eventEndDate = humanizePointDate(dateTo, 'YY/MM/DD HH:mm');
 
-  const isOffers = offers.length > 0 ? '' : 'visually-hidden';
-
   const getDestinations = () => CITIES.map((city) => `<option value="${city}"></option>`).join('');
+
+  const isSubmitDisabled = basePrice >= 0 ? '' : 'disabled';
+
 
   const getEventOffers = () => {
 
@@ -60,12 +61,13 @@ const createPointEditTemplate = (point) => {
       </div>`);
   }).join('');
 
+  const hasOffers = offers.length < 0 ? '' : `<div class="event__available-offers">
+    ${getEventOffers()}
+    </div>`;
+
   const getDestinationDescription = () => {
     if (destination.name === null) {
-      return (` <section class="event__section  event__section--destination visually-hidden">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${destination.description}</p>
-    </section>`);
+      return ('');
     }
     return (` <section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -150,7 +152,7 @@ const createPointEditTemplate = (point) => {
               value="${basePrice}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled}>Save</button>
           <button class="event__reset-btn" type="reset">Delete</button>
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
@@ -159,10 +161,7 @@ const createPointEditTemplate = (point) => {
         <section class="event__details">
           <section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-            <div class="event__available-offers" ${isOffers}>
-              ${getEventOffers()}
-            </div>
+              ${hasOffers}
           </section>
           ${getDestinationDescription()}
         </section>
@@ -212,9 +211,8 @@ export default class PointEditView extends AbstractStatefulView{
     this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeChangeHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#editDestinationHandler);
-
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#editEventPrice);
   };
-
 
   _restoreHandlers = () => {
     this.setInnerHandlers();
@@ -222,6 +220,12 @@ export default class PointEditView extends AbstractStatefulView{
     this.#setEndDatepicker();
     this.element.querySelector('form').addEventListener('submit', this.#submitClickHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupClickHandler);
+  };
+
+  #editEventPrice = (evt) => {
+    this.updateElement({
+      basePrice: evt.target.value,
+    });
   };
 
   #editDestinationHandler = (evt) => {
