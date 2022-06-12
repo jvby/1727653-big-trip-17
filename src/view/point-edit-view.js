@@ -2,6 +2,9 @@ import {humanizePointDate, getRandomInteger} from '../utils.js';
 import {getOffers, getRandomArrayElement} from '../mock/point.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {DESCRIPTIONS, TYPES, CITIES} from '../const.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
+
 
 const createPointEditTemplate = (point) => {
   const { basePrice, dateFrom, dateTo, destination, offers, type } = point;
@@ -11,6 +14,9 @@ const createPointEditTemplate = (point) => {
   const eventEndDate = humanizePointDate(dateTo, 'YY/MM/DD HH:mm');
 
   const getDestinations = () => CITIES.map((city) => `<option value="${city}"></option>`).join('');
+
+  const isSubmitDisabled = basePrice >= 0 ? '' : 'disabled';
+
 
   const getEventOffers = () => {
 
@@ -55,12 +61,13 @@ const createPointEditTemplate = (point) => {
       </div>`);
   }).join('');
 
+  const hasOffers = offers.length < 0 ? '' : `<div class="event__available-offers">
+    ${getEventOffers()}
+    </div>`;
+
   const getDestinationDescription = () => {
     if (destination.name === null) {
-      return (` <section class="event__section  event__section--destination visually-hidden">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${destination.description}</p>
-    </section>`);
+      return ('');
     }
     return (` <section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
@@ -145,7 +152,7 @@ const createPointEditTemplate = (point) => {
               value="${basePrice}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled}>Save</button>
           <button class="event__reset-btn" type="reset">Delete</button>
           <button class="event__rollup-btn" type="button">
             <span class="visually-hidden">Open event</span>
@@ -154,10 +161,7 @@ const createPointEditTemplate = (point) => {
         <section class="event__details">
           <section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
-            <div class="event__available-offers">
-              ${getEventOffers()}
-            </div>
+              ${hasOffers}
           </section>
           ${getDestinationDescription()}
         </section>
@@ -167,12 +171,15 @@ const createPointEditTemplate = (point) => {
 };
 
 export default class PointEditView extends AbstractStatefulView{
-
+  #startDatepicker = null;
+  #endDatepicker = null;
 
   constructor(point) {
     super();
     this._state = PointEditView.parsePointToState(point);
     this.setInnerHandlers();
+    this.#setStartDatepicker();
+    this.#setEndDatepicker();
   }
 
   get template() {
@@ -204,14 +211,21 @@ export default class PointEditView extends AbstractStatefulView{
     this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeChangeHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#editDestinationHandler);
-
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#editEventPrice);
   };
-
 
   _restoreHandlers = () => {
     this.setInnerHandlers();
+    this.#setStartDatepicker();
+    this.#setEndDatepicker();
     this.element.querySelector('form').addEventListener('submit', this.#submitClickHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupClickHandler);
+  };
+
+  #editEventPrice = (evt) => {
+    this.updateElement({
+      basePrice: evt.target.value,
+    });
   };
 
   #editDestinationHandler = (evt) => {
@@ -256,6 +270,44 @@ export default class PointEditView extends AbstractStatefulView{
   #submitClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.submitClick(PointEditView.parsePointToState(this._state));
+  };
+
+  #startDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+  #endDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
+  };
+
+  #setStartDatepicker = () => {
+    this.#startDatepicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        enableTime: true,
+        dateFormat: 'd/m/y H:i',
+        'time_24hr': true,
+        defaultDate: this._state.dateFrom,
+        onChange: this.#startDateChangeHandler,
+      },
+    );
+  };
+
+  #setEndDatepicker = () => {
+    this.#endDatepicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        enableTime: true,
+        'time_24hr': true,
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateTo,
+        onChange: this.#endDateChangeHandler,
+      },
+    );
   };
 
   static parsePointToState = (point) => ({...point});
