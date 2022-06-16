@@ -1,7 +1,7 @@
 import {humanizePointDate, getRandomInteger} from '../utils.js';
 import {getOffers, getRandomArrayElement} from '../mock/point.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {DESCRIPTIONS, TYPES, CITIES} from '../const.js';
+import {DESCRIPTIONS, TYPES, CITIES, BLANC_POINT} from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
@@ -174,7 +174,7 @@ export default class PointEditView extends AbstractStatefulView{
   #startDatepicker = null;
   #endDatepicker = null;
 
-  constructor(point) {
+  constructor(point = BLANC_POINT) {
     super();
     this._state = PointEditView.parsePointToState(point);
     this.setInnerHandlers();
@@ -220,6 +220,8 @@ export default class PointEditView extends AbstractStatefulView{
     this.#setEndDatepicker();
     this.element.querySelector('form').addEventListener('submit', this.#submitClickHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#rollupClickHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
+
   };
 
   #editEventPrice = (evt) => {
@@ -267,9 +269,19 @@ export default class PointEditView extends AbstractStatefulView{
 
   };
 
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
+  };
+
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(PointEditView.parseStateToPoint(this._state));
+  };
+
   #submitClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.submitClick(PointEditView.parsePointToState(this._state));
+    this._callback.submitClick(PointEditView.parseStateToPoint(this._state));
   };
 
   #startDateChangeHandler = ([userDate]) => {

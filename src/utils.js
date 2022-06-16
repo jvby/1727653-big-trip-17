@@ -1,6 +1,19 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import { FILTER_TYPE } from './const.js';
 dayjs.extend(duration);
+dayjs.extend(isSameOrBefore);
+dayjs.extend(isSameOrAfter);
+
+const today = dayjs().format('DD/MM/YYYY HH-mm');
+
+const filter = {
+  [FILTER_TYPE.EVERYTHING] : (points) => points,
+  [FILTER_TYPE.FUTURE] : (points) => points.filter((point) => dayjs(point.dateFrom).isSameOrAfter(dayjs())),
+  [FILTER_TYPE.PAST] : (points) => points.filter((point) => dayjs(point.dateTo).isSameOrBefore(dayjs())),
+};
 
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -32,22 +45,10 @@ const getEventDuration = (from, to) => {
 
 };
 
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
 const sortPointsByTime = (timeA, timeB) => dayjs(timeA.dateFrom).diff(dayjs(timeA.dateTo)) > dayjs(timeB.dateFrom).diff(dayjs(timeB.dateTo)) ? 1 : -1;
 const sortPointsByPrice = (priceA, priceB) => priceA.basePrice < priceB.basePrice ? 1 : -1;
 const sortPointsByDate = (dateA, dateB) => dateA.dateFrom > dateB.dateFrom ? 1 : -1;
 
-export {getRandomInteger, humanizePointDate, getEventDuration, updateItem, sortPointsByTime, sortPointsByPrice, sortPointsByDate};
+const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+
+export {getRandomInteger, humanizePointDate, getEventDuration, sortPointsByTime, sortPointsByPrice, sortPointsByDate, isDatesEqual, filter, today};

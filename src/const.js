@@ -1,3 +1,5 @@
+import {today} from './utils.js';
+
 const CITIES = [
   'Chamonix',
   'Moscow',
@@ -66,4 +68,33 @@ const EVENT_TYPE = {
   RESTAURANT: 'restaurant',
 };
 
-export {TYPES, DESCRIPTIONS, CITIES, TITLES, MODE, SORT_TYPE, EVENT_TYPE};
+const USER_ACTION = {
+  UPDATE_POINT: 'UPDATE_TASK',
+  ADD_POINT: 'ADD_TASK',
+  DELETE_POINT: 'DELETE_TASK',
+};
+
+const UPDATE_TYPE = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+const FILTER_TYPE = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};
+
+const BLANC_POINT = {
+  id: null,
+  basePrice: '',
+  dateFrom: today,
+  dateTo: today,
+  destination: '',
+  isFavorite: false,
+  offers: [],
+  type: TYPES[0],
+};
+
+export {TYPES, DESCRIPTIONS, CITIES, TITLES, MODE, SORT_TYPE, EVENT_TYPE, USER_ACTION, UPDATE_TYPE, FILTER_TYPE, BLANC_POINT};
