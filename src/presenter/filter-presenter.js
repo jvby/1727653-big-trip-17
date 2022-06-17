@@ -15,6 +15,23 @@ export default class FilterPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
+  init = () => {
+    const filters = this.filters;
+    const prevFilterComponent = this.#filterComponent;
+
+
+    this.#filterComponent = new FilterView(filters, this.#filterModel.filter);
+    this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
+
+    if (prevFilterComponent === null) {
+      render(this.#filterComponent, this.#filterContainer);
+      return;
+    }
+
+    replace(this.#filterComponent, prevFilterComponent);
+    remove(prevFilterComponent);
+  };
+
   get filters() {
 
     return [
@@ -32,23 +49,6 @@ export default class FilterPresenter {
       },
     ];
   }
-
-  init = () => {
-    const filters = this.filters;
-    const prevFilterComponent = this.#filterComponent;
-
-
-    this.#filterComponent = new FilterView(filters, this.#filterModel.filter);
-    this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
-
-    if (prevFilterComponent === null) {
-      render(this.#filterComponent, this.#filterContainer);
-      return;
-    }
-
-    replace(this.#filterComponent, prevFilterComponent);
-    remove(prevFilterComponent);
-  };
 
   #handleModelEvent = () => {
     this.init();

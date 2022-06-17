@@ -1,9 +1,30 @@
 import {humanizePointDate, getRandomInteger} from '../utils.js';
 import {getOffers, getRandomArrayElement} from '../mock/point.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {DESCRIPTIONS, TYPES, CITIES, BLANC_POINT} from '../const.js';
+import {DESCRIPTIONS, TYPES, CITIES} from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import dayjs from 'dayjs';
+import he from 'he';
+
+const BlankPoint = {
+  id: null,
+  basePrice: '',
+  dateFrom: dayjs().toDate(),
+  dateTo: dayjs().toDate(),
+  destination: {
+    description: '',
+    name: '',
+    pictures: [
+      {
+        src:  null,
+        description: null,
+      },]
+  },
+  isFavorite: false,
+  offers: [],
+  type: TYPES[0],
+};
 
 
 const createPointEditTemplate = (point) => {
@@ -15,7 +36,7 @@ const createPointEditTemplate = (point) => {
 
   const getDestinations = () => CITIES.map((city) => `<option value="${city}"></option>`).join('');
 
-  const isSubmitDisabled = basePrice >= 0 ? '' : 'disabled';
+  const isSubmitDisabled = basePrice >= 0 && CITIES.includes(destination.name)? '' : 'disabled';
 
 
   const getEventOffers = () => {
@@ -66,13 +87,22 @@ const createPointEditTemplate = (point) => {
     </div>`;
 
   const getDestinationDescription = () => {
-    if (destination.name === null) {
+    if (destination.name === null || destination.name === '') {
       return ('');
     }
-    return (` <section class="event__section  event__section--destination">
-    <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${destination.description}</p>
-  </section>`);
+
+    const pointDestinationPicture = destination.pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="Event photo">`).join('');
+
+    return (
+      `<section class="event__section  event__section--destination">
+          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+          <p class="event__destination-description">${destination.description}</p>
+          <div class="event__photos-container">
+            <div class="event__photos-tape">
+            ${pointDestinationPicture}
+            </div>
+          </div>
+        </section>`);
   };
 
 
@@ -112,7 +142,7 @@ const createPointEditTemplate = (point) => {
               id="event-destination-1"
               type="text"
               name="event-destination"
-              value="${destination.name}"
+              value="${he.encode(destination.name)}"
               list="destination-list-1">
             <datalist id="destination-list-1">
               ${getDestinations()}
@@ -174,7 +204,7 @@ export default class PointEditView extends AbstractStatefulView{
   #startDatepicker = null;
   #endDatepicker = null;
 
-  constructor(point = BLANC_POINT) {
+  constructor(point = BlankPoint) {
     super();
     this._state = PointEditView.parsePointToState(point);
     this.setInnerHandlers();

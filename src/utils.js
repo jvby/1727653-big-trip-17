@@ -1,8 +1,8 @@
+import { FILTER_TYPE } from './const.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
-import { FILTER_TYPE } from './const.js';
 dayjs.extend(duration);
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);

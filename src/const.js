@@ -1,5 +1,3 @@
-import {today} from './utils.js';
-
 const CITIES = [
   'Chamonix',
   'Moscow',
@@ -86,15 +84,4 @@ const FILTER_TYPE = {
   PAST: 'past',
 };
 
-const BLANC_POINT = {
-  id: null,
-  basePrice: '',
-  dateFrom: today,
-  dateTo: today,
-  destination: '',
-  isFavorite: false,
-  offers: [],
-  type: TYPES[0],
-};
-
-export {TYPES, DESCRIPTIONS, CITIES, TITLES, MODE, SORT_TYPE, EVENT_TYPE, USER_ACTION, UPDATE_TYPE, FILTER_TYPE, BLANC_POINT};
+export {TYPES, DESCRIPTIONS, CITIES, TITLES, MODE, SORT_TYPE, EVENT_TYPE, USER_ACTION, UPDATE_TYPE, FILTER_TYPE};

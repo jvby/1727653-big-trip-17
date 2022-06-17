@@ -15,7 +15,7 @@ export default class TripPresenter {
   #filterModel = null;
   #tripList = new PointsList();
   #pointPresenter = new Map();
-  #currentSortType = SORT_TYPE.DEFAULT;
+  #currentSortType = SORT_TYPE.DAY;
   #filterType = FILTER_TYPE.EVERYTHING;
   #listEmptyComponent= null;
   #pointNewPresenter = null;
@@ -54,7 +54,7 @@ export default class TripPresenter {
   }
 
   createPoint = (callback) => {
-    this.#currentSortType = SORT_TYPE.DEFAULT;
+    this.#currentSortType = SORT_TYPE.DAY;
     this.#filterModel.setFilter(UPDATE_TYPE.MAJOR, FILTER_TYPE.EVERYTHING);
     this.#pointNewPresenter.init(callback);
   };
