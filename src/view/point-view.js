@@ -1,10 +1,10 @@
 import {humanizePointDate, getEventDuration} from '../utils.js';
-import {getOffers} from '../mock/point.js';
+
 import AbstractView from '../framework/view/abstract-view.js';
 import he from 'he';
 
 
-const createPointTemplate = (point) => {
+const createPointTemplate = (point, allOffers) => {
   const {
     basePrice,
     dateFrom,
@@ -15,7 +15,7 @@ const createPointTemplate = (point) => {
     type
   } = point;
 
-  const pointTypeOffer = getOffers().find((offer) => offer.type === type);
+  const pointTypeOffer = allOffers.find((offer) => offer.type === type);
   const offersForRender = offers.map((offerID) => (
     pointTypeOffer.offers.find((offer) => offer.id === offerID)
   ));
@@ -81,14 +81,16 @@ const createPointTemplate = (point) => {
 export default class PointView extends AbstractView {
 
   #point = null;
+  #offers = null;
 
-  constructor(point) {
+  constructor(point, offers) {
     super();
     this.#point = point;
+    this.#offers = offers;
   }
 
   get template() {
-    return createPointTemplate(this.#point);
+    return createPointTemplate(this.#point, this.#offers);
   }
 
   setRollupClickHandler = (callback) => {
