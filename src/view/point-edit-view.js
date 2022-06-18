@@ -65,6 +65,7 @@ const createPointEditTemplate = (point) => {
 
   const getEventType = () => TYPES.map((eventType) => {
     const upperCaseType = eventType[0].toUpperCase() + eventType.slice(1);
+    const isTypeChecked = type === eventType ? 'checked' : '';
 
     return (
       `<div class="event__type-item">
@@ -73,7 +74,7 @@ const createPointEditTemplate = (point) => {
           class="event__type-input  visually-hidden"
           type="radio"
           name="event-type"
-          value="${eventType}">
+          value="${eventType}" ${isTypeChecked}>
         <label
           class="event__type-label  event__type-label--${eventType}"
           for="event-type-${eventType}-1">
