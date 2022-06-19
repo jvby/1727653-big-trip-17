@@ -5,6 +5,8 @@ import { MODE, USER_ACTION, UPDATE_TYPE } from '../const.js';
 import { isDatesEqual } from '../utils.js';
 
 export default class PointPresenter {
+
+
   #tripListContainer = null;
 
   #pointComponent = null;
@@ -15,6 +17,8 @@ export default class PointPresenter {
 
 
   #point = null;
+  #offers = null;
+  #destinations = null;
 
   constructor (tripListContainer, changeData, changeMode) {
     this.#tripListContainer = tripListContainer;
@@ -22,14 +26,16 @@ export default class PointPresenter {
     this.#changeMode = changeMode;
   }
 
-  init (point){
+  init (point, offers = this.#offers, destinations = this.#destinations){
     this.#point = point;
+    this.#offers = offers;
+    this.#destinations = destinations;
 
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
-    this.#pointComponent = new PointView(point);
-    this.#pointEditComponent = new PointEditView(point);
+    this.#pointComponent = new PointView(point, offers);
+    this.#pointEditComponent = new PointEditView(point, offers, destinations);
 
     this.#pointComponent.setRollupClickHandler(this.#handleRollupClick);
     this.#pointEditComponent.setEditSubmitClickHandler(this.#handleSubmitClick);

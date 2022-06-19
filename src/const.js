@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 const CITIES = [
   'Chamonix',
   'Moscow',
@@ -76,6 +78,8 @@ const UPDATE_TYPE = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
+  INIT: 'INIT',
+
 };
 
 const FILTER_TYPE = {
@@ -84,4 +88,23 @@ const FILTER_TYPE = {
   PAST: 'past',
 };
 
-export {TYPES, DESCRIPTIONS, CITIES, TITLES, MODE, SORT_TYPE, EVENT_TYPE, USER_ACTION, UPDATE_TYPE, FILTER_TYPE};
+const BLANK_POINT = {
+  id: null,
+  basePrice: '',
+  dateFrom: dayjs().toDate(),
+  dateTo: dayjs().toDate(),
+  destination: {
+    description: '',
+    name: '',
+    pictures: [
+      {
+        src:  null,
+        description: null,
+      },]
+  },
+  isFavorite: false,
+  offers: [],
+  type: TYPES[0],
+};
+
+export {TYPES, DESCRIPTIONS, CITIES, TITLES, MODE, SORT_TYPE, EVENT_TYPE, USER_ACTION, UPDATE_TYPE, FILTER_TYPE, BLANK_POINT};
