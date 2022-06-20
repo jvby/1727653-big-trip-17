@@ -26,7 +26,7 @@ export default class PointPresenter {
     this.#changeMode = changeMode;
   }
 
-  init (point, offers = this.#offers, destinations = this.#destinations){
+  init (point, offers, destinations){
     this.#point = point;
     this.#offers = offers;
     this.#destinations = destinations;
@@ -34,8 +34,8 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
-    this.#pointComponent = new PointView(point, offers);
-    this.#pointEditComponent = new PointEditView(point, offers, destinations);
+    this.#pointComponent = new PointView(this.#point, this.#offers);
+    this.#pointEditComponent = new PointEditView(this.#point, this.#offers,  this.#destinations);
 
     this.#pointComponent.setRollupClickHandler(this.#handleRollupClick);
     this.#pointEditComponent.setEditSubmitClickHandler(this.#handleSubmitClick);
@@ -53,7 +53,8 @@ export default class PointPresenter {
     }
 
     if (this.#mode === MODE.EDITING) {
-      replace(this.#pointEditComponent, prevPointEditComponent);
+      replace(this.#pointComponent, prevPointEditComponent);
+      this.#mode = MODE.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -67,8 +68,44 @@ export default class PointPresenter {
 
   resetView = () => {
     if (this.#mode !== MODE.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceEditFormToPoint();
     }
+  };
+
+  setSaving = () => {
+    if (this.#mode === MODE.EDITING) {
+      this.#pointEditComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  };
+
+  setDeleting = () => {
+    if (this.#mode === MODE.EDITING) {
+      this.#pointEditComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  };
+
+  setAborting = () => {
+    if (this.#mode === MODE.DEFAULT) {
+      this.#pointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
   };
 
   #replacePointToEditForm = () => {
@@ -107,7 +144,6 @@ export default class PointPresenter {
       USER_ACTION.UPDATE_POINT,
       isMinorUpdate ? UPDATE_TYPE.MINOR : UPDATE_TYPE.PATCH,
       update);
-    this.#replaceEditFormToPoint();
   };
 
   #handleRollupEditClick = () => {

@@ -1,7 +1,6 @@
 import PointEditView from '../view/point-edit-view.js';
 import {render, remove, RenderPosition} from '../framework/render.js';
 import { USER_ACTION, UPDATE_TYPE, BLANK_POINT} from '../const.js';
-import { nanoid } from 'nanoid';
 
 export default class PointNewPresenter {
   #pointListContainer = null;
@@ -18,7 +17,7 @@ export default class PointNewPresenter {
     this.#changeData = changeData;
   }
 
-  init = (callback, offers = this.#offers, destinations = this.#destinations) => {
+  init = (callback, offers, destinations) => {
     this.#destroyCallback = callback;
     this.#offers = offers;
     this.#destinations = destinations;
@@ -51,13 +50,30 @@ export default class PointNewPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   };
 
+  setSaving = () => {
+    this.#pointEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  };
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+    this.#pointEditComponent.shake(resetFormState);
+  };
+
   #handleSubmitClick = (update) => {
     this.#changeData(
       USER_ACTION.ADD_POINT,
       UPDATE_TYPE.MINOR,
-      {id: nanoid(), ...update},
+      update,
     );
-    this.destroy();
   };
 
   #handleDeleteClick = () => {

@@ -7,17 +7,17 @@ import he from 'he';
 
 
 const createPointEditTemplate = (point, allOffers, allDestinations) => {
-  const { basePrice, dateFrom, dateTo, destination, offers, type } = point;
+  const { basePrice, dateFrom, dateTo, destination, offers, type, isDisabled, isSaving, isDeleting } = point;
 
-  const allDestinationsName = allDestinations.map((destinationElement) => destinationElement.name);
+  const availableCities = allDestinations.map((destinationElement) => destinationElement.name);
 
   const eventStartDate = humanizePointDate(dateFrom, 'YY/MM/DD HH:mm');
 
   const eventEndDate = humanizePointDate(dateTo, 'YY/MM/DD HH:mm');
 
-  const getDestinations = () => allDestinationsName.map((city) => `<option value="${city}"></option>`).join('');
+  const getDestinations = () => availableCities.map((city) => `<option value="${city}"></option>`).join('');
 
-  const isSubmitDisabled = basePrice >= 0 && allDestinationsName.includes(destination.name)? '' : 'disabled';
+  const isSubmitDisabled = basePrice >= 0 && availableCities.includes(destination.name) && !isDisabled ? '' : 'disabled';
 
   const pointTypeOffer = allOffers.find((offer) => offer.type === type);
 
@@ -32,7 +32,8 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
           type="checkbox"
           name="event-offer-${type}"
           value="${offer.id}"
-          ${checked}>
+          ${checked}
+          ${isDisabled ? 'disabled' : ''}>
         <label class="event__offer-label" for="event-offer-${type}-${offer.id}">
           <span class="event__offer-title">${offer.title}</span>
           &plus;&euro;&nbsp;
@@ -101,7 +102,8 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
             <input
               class="event__type-toggle  visually-hidden"
               id="event-type-toggle-1"
-              type="checkbox">
+              type="checkbox"
+              ${isDisabled ? 'disabled' : ''}>
 
             <div class="event__type-list">
               <fieldset class="event__type-group">
@@ -121,7 +123,8 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
               type="text"
               name="event-destination"
               value="${he.encode(destination.name)}"
-              list="destination-list-1">
+              list="destination-list-1"
+              ${isDisabled ? 'disabled' : ''}>
             <datalist id="destination-list-1">
               ${getDestinations()}
             </datalist>
@@ -136,7 +139,8 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
               id="event-start-time-1"
               type="text"
               name="event-start-time"
-              value="${eventStartDate}">
+              value="${eventStartDate}"
+              ${isDisabled ? 'disabled' : ''}>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
             <input
@@ -144,7 +148,8 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
               id="event-end-time-1"
               type="text"
               name="event-end-time"
-              value="${eventEndDate}">
+              value="${eventEndDate}"
+              ${isDisabled ? 'disabled' : ''}>
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -157,12 +162,13 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
               id="event-price-1"
               type="text"
               name="event-price"
-              value="${basePrice}">
+              value="${basePrice}"
+              ${isDisabled ? 'disabled' : ''}>
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled}>Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
-          <button class="event__rollup-btn" type="button">
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled}>${isSaving ? 'Saving...' : 'Save'}</button>
+          <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
+          <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
             <span class="visually-hidden">Open event</span>
           </button>
         </header>
@@ -240,8 +246,8 @@ export default class PointEditView extends AbstractStatefulView{
   };
 
   #editEventPrice = (evt) => {
-    this.updateElement({
-      basePrice: evt.target.value,
+    this._setState({
+      basePrice: Number(evt.target.value),
     });
   };
 
@@ -335,8 +341,19 @@ export default class PointEditView extends AbstractStatefulView{
     );
   };
 
-  static parsePointToState = (point) => ({...point});
-  static parseStateToPoint = (state) => ({...state});
+  static parsePointToState = (point) => ({...point,
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false,
+  });
 
+  static parseStateToPoint = (state) => {
+    const point = {...state};
 
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
+  };
 }
