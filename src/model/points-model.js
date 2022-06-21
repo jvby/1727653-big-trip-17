@@ -64,7 +64,7 @@ export default class PointsModel extends Observable{
     const index = this.#points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
-      throw new Error('Can\'t update unexisting point');
+      throw new Error(`Can't update unexisting point, update: ${update}`);
     }
 
     try {
@@ -77,7 +77,7 @@ export default class PointsModel extends Observable{
       ];
       this._notify(updateType, updatedPoint);
     } catch(err) {
-      throw new Error('Can\'t update point');
+      throw new Error(`Can't add point, update: ${update}`);
     }
   };
 
@@ -92,7 +92,7 @@ export default class PointsModel extends Observable{
       ];
       this._notify(updateType, newPoint);
     } catch(err) {
-      throw new Error('Can\'t add point');
+      throw new Error(`Can't add point, update: ${update}`);
     }
   };
 
@@ -100,17 +100,14 @@ export default class PointsModel extends Observable{
     const index = this.#points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
-      throw new Error('Can\'t delete unexisting point');
+      throw new Error(`Can't delete unexisting point, update: ${update}`);
     }
     try {
       await this.#pointsApiService.deletePoint(update);
-      this.#points = [
-        ...this.#points.slice(0, index),
-        ...this.#points.slice(index + 1),
-      ];
+      this.#points = this.points.filter((point) => point.id !== update.id );
       this._notify(updateType);
     } catch(err) {
-      throw new Error('Can\'t delete point');
+      throw new Error(`Can't delete point, update: ${update}`);
     }
   };
 }

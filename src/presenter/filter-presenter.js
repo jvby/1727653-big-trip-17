@@ -49,7 +49,7 @@ export default class FilterPresenter {
       {
         type: FILTER_TYPE.FUTURE,
         name: 'Future',
-        ount: filter[FILTER_TYPE.FUTURE](points).length,
+        count: filter[FILTER_TYPE.FUTURE](points).length,
       },
       {
         type: FILTER_TYPE.PAST,
