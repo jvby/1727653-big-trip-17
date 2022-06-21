@@ -8,10 +8,10 @@ const createTripInfoTitle = (points) => {
   if (cities.length >= TRIP_INFO_CITIES_COUNT) {
     return (` ${cities[0]} &mdash; ... &mdash; ${cities.at(-1)} `);
   }
-  if (points.length < TRIP_INFO_CITIES_COUNT) {
-    return cities.join(' &mdash; ');
-  }
+
+  return cities.join(' &mdash; ');
 };
+
 const createTripInfoTemplate = (points, tripInfoPrice) => {
   const tripInfoTitle = createTripInfoTitle(points);
 
