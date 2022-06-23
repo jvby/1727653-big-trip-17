@@ -1,4 +1,4 @@
-import { FILTER_TYPE } from './const.js';
+import { FilterType } from './const.js';
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration.js';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
@@ -10,9 +10,9 @@ dayjs.extend(isSameOrAfter);
 const today = dayjs().format('DD/MM/YYYY HH-mm');
 
 const filter = {
-  [FILTER_TYPE.EVERYTHING] : (points) => points,
-  [FILTER_TYPE.FUTURE] : (points) => points.filter((point) => dayjs(point.dateFrom).isSameOrAfter(dayjs())),
-  [FILTER_TYPE.PAST] : (points) => points.filter((point) => dayjs(point.dateTo).isSameOrBefore(dayjs())),
+  [FilterType.EVERYTHING] : (points) => points,
+  [FilterType.FUTURE] : (points) => points.filter((point) => dayjs(point.dateFrom).isSameOrAfter(dayjs())),
+  [FilterType.PAST] : (points) => points.filter((point) => dayjs(point.dateTo).isSameOrBefore(dayjs())),
 };
 
 const getRandomInteger = (a = 0, b = 1) => {

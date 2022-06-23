@@ -1,6 +1,6 @@
 import {render, replace, remove} from '../framework/render.js';
 import FilterView from '../view/filter-view.js';
-import { UPDATE_TYPE, FILTER_TYPE } from '../const.js';
+import { UpdateType, FilterType } from '../const.js';
 import { filter } from '../utils.js';
 
 
@@ -20,6 +20,28 @@ export default class FilterPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
+  get filters() {
+    const points = this.#pointsModel.points;
+
+    return [
+      {
+        type: FilterType.EVERYTHING,
+        name: 'Everything',
+        count: filter[FilterType.EVERYTHING](points).length,
+      },
+      {
+        type: FilterType.FUTURE,
+        name: 'Future',
+        count: filter[FilterType.FUTURE](points).length,
+      },
+      {
+        type: FilterType.PAST,
+        name: 'Past',
+        count: filter[FilterType.PAST](points).length,
+      },
+    ];
+  }
+
   init = () => {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
@@ -37,28 +59,6 @@ export default class FilterPresenter {
     remove(prevFilterComponent);
   };
 
-  get filters() {
-    const points = this.#pointsModel.points;
-
-    return [
-      {
-        type: FILTER_TYPE.EVERYTHING,
-        name: 'Everything',
-        count: filter[FILTER_TYPE.EVERYTHING](points).length,
-      },
-      {
-        type: FILTER_TYPE.FUTURE,
-        name: 'Future',
-        count: filter[FILTER_TYPE.FUTURE](points).length,
-      },
-      {
-        type: FILTER_TYPE.PAST,
-        name: 'Past',
-        count: filter[FILTER_TYPE.PAST](points).length,
-      },
-    ];
-  }
-
   #handleModelEvent = () => {
     this.init();
   };
@@ -68,6 +68,6 @@ export default class FilterPresenter {
       return;
     }
 
-    this.#filterModel.setFilter(UPDATE_TYPE.MAJOR, filterType);
+    this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
   };
 }

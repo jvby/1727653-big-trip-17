@@ -1,8 +1,9 @@
 import PointEditView from '../view/point-edit-view.js';
 import {render, remove, RenderPosition} from '../framework/render.js';
-import { USER_ACTION, UPDATE_TYPE, BLANK_POINT} from '../const.js';
+import { UserAction, UpdateType, BLANK_POINT} from '../const.js';
 
 export default class PointNewPresenter {
+  #blankPoint = null;
   #pointListContainer = null;
   #changeData = null;
 
@@ -18,6 +19,7 @@ export default class PointNewPresenter {
   }
 
   init = (callback, offers, destinations) => {
+    this.#blankPoint = {...BLANK_POINT};
     this.#destroyCallback = callback;
     this.#offers = offers;
     this.#destinations = destinations;
@@ -25,7 +27,7 @@ export default class PointNewPresenter {
     if (this.#pointEditComponent !== null) {
       return;
     }
-    this.#pointEditComponent = new PointEditView(BLANK_POINT, this.#offers, this.#destinations);
+    this.#pointEditComponent = new PointEditView(this.#blankPoint, this.#offers, this.#destinations);
 
     this.#pointEditComponent.setEditSubmitClickHandler(this.#handleSubmitClick);
     this.#pointEditComponent.setEditRollupClickHandler(this.#handleRollupEditClick);
@@ -41,6 +43,8 @@ export default class PointNewPresenter {
     if (this.#pointEditComponent === null) {
       return;
     }
+
+    console.log(BLANK_POINT);
 
     this.#destroyCallback?.();
 
@@ -70,8 +74,8 @@ export default class PointNewPresenter {
 
   #handleSubmitClick = (update) => {
     this.#changeData(
-      USER_ACTION.ADD_POINT,
-      UPDATE_TYPE.MINOR,
+      UserAction.ADD_POINT,
+      UpdateType.MINOR,
       update,
     );
   };

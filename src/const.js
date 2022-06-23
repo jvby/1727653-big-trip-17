@@ -2,27 +2,6 @@ import dayjs from 'dayjs';
 
 const TRIP_INFO_CITIES_COUNT = 3;
 
-const CITIES = [
-  'Chamonix',
-  'Moscow',
-  'Paris',
-  'London',
-  'Madrid',
-  'Barcelona',
-  'Berlin',
-  'Prague',
-];
-
-const DESCRIPTIONS = [
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  'Cras aliquet varius magna, non porta ligula feugiat eget.',
-  'Fusce tristique felis at fermentum pharetra.',
-  'Aliquam id orci ut lectus varius viverra.',
-  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
-  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
-  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
-];
-
 const TYPES = [
   'taxi',
   'bus',
@@ -35,30 +14,18 @@ const TYPES = [
   'restaurant',
 ];
 
-const TITLES = [
-  'Add luggage',
-  'Switch to comfort',
-  'Add meal',
-  'Choose seats',
-  'Travel by train',
-  'No smoking',
-  'Lunch',
-  'Transfer',
-  'Switch to business',
-];
-
-const MODE = {
+const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
 };
 
-const SORT_TYPE = {
+const SortType = {
   DAY: 'day',
   TIME: 'time',
   PRICE: 'price',
 };
 
-const EVENT_TYPE = {
+const EventType = {
   TAXI: 'taxi',
   BUS: 'bus',
   TRIAN: 'train',
@@ -70,13 +37,13 @@ const EVENT_TYPE = {
   RESTAURANT: 'restaurant',
 };
 
-const USER_ACTION = {
+const UserAction = {
   UPDATE_POINT: 'UPDATE_TASK',
   ADD_POINT: 'ADD_TASK',
   DELETE_POINT: 'DELETE_TASK',
 };
 
-const UPDATE_TYPE = {
+const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
@@ -84,7 +51,7 @@ const UPDATE_TYPE = {
 
 };
 
-const FILTER_TYPE = {
+const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
   PAST: 'past',
@@ -109,9 +76,9 @@ const BLANK_POINT = {
   type: TYPES[0],
 };
 
-const TIME_LIMIT = {
+const TimeLimit = {
   LOWER_LIMIT: 350,
   UPPER_LIMIT: 1000,
 };
 
-export {TYPES, DESCRIPTIONS, CITIES, TITLES, MODE, SORT_TYPE, EVENT_TYPE, USER_ACTION, UPDATE_TYPE, FILTER_TYPE, BLANK_POINT, TIME_LIMIT, TRIP_INFO_CITIES_COUNT};
+export {TYPES, Mode, SortType, EventType, UserAction, UpdateType, FilterType, BLANK_POINT, TimeLimit, TRIP_INFO_CITIES_COUNT};

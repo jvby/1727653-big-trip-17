@@ -160,7 +160,8 @@ const createPointEditTemplate = (point, allOffers, allDestinations) => {
             <input
               class="event__input  event__input--price"
               id="event-price-1"
-              type="text"
+              type="number"
+              min="0"
               name="event-price"
               value="${basePrice}"
               ${isDisabled ? 'disabled' : ''}>
@@ -192,7 +193,7 @@ export default class PointEditView extends AbstractStatefulView{
   #offers = null;
   #destinations = null;
 
-  constructor(point = BLANK_POINT, offers, destinations) {
+  constructor(point, offers, destinations) {
     super();
     this._state = PointEditView.parsePointToState(point);
     this.#offers = offers;
@@ -246,6 +247,8 @@ export default class PointEditView extends AbstractStatefulView{
   };
 
   #editEventPrice = (evt) => {
+    evt.preventDefault();
+
     this._setState({
       basePrice: Number(evt.target.value),
     });
@@ -275,6 +278,9 @@ export default class PointEditView extends AbstractStatefulView{
     }
 
     this._state.offers.push(offerID);
+    console.log(BLANK_POINT);
+    console.log(this._state);
+
   };
 
   #eventTypeChangeHandler = (evt) => {

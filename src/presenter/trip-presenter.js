@@ -6,7 +6,7 @@ import LoadingView from '../view/loading-view.js';
 import PointsList from '../view/points-list-view.js';
 import EmptyPointsListView from '../view/empty-points-list-view.js';
 import {sortPointsByTime, sortPointsByPrice, sortPointsByDate, filter} from '../utils.js';
-import {SORT_TYPE, USER_ACTION, UPDATE_TYPE, FILTER_TYPE, TIME_LIMIT} from '../const.js';
+import {SortType, UserAction, UpdateType, FilterType, TimeLimit} from '../const.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 import TripInfoView from '../view/trip-info-view';
 
@@ -18,13 +18,13 @@ export default class TripPresenter {
   #filterModel = null;
   #tripList = new PointsList();
   #pointPresenter = new Map();
-  #currentSortType = SORT_TYPE.DAY;
-  #filterType = FILTER_TYPE.EVERYTHING;
+  #currentSortType = SortType.DAY;
+  #filterType = FilterType.EVERYTHING;
   #listEmptyComponent= null;
   #pointNewPresenter = null;
   #loadingComponent = new LoadingView();
   #isLoading = true;
-  #uiBlocker = new UiBlocker(TIME_LIMIT.LOWER_LIMIT, TIME_LIMIT.UPPER_LIMIT);
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
   #tripInfoComponent = null;
 
 
@@ -42,20 +42,15 @@ export default class TripPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
-  init = () => {
-    this.#renderList();
-
-  };
-
   get points() {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
     const filteredPoints = filter[this.#filterType](points);
 
     switch (this.#currentSortType) {
-      case SORT_TYPE.TIME:
+      case SortType.TIME:
         return filteredPoints.sort(sortPointsByTime);
-      case SORT_TYPE.PRICE:
+      case SortType.PRICE:
         return filteredPoints.sort(sortPointsByPrice);
     }
     return filteredPoints.sort(sortPointsByDate);
@@ -69,9 +64,14 @@ export default class TripPresenter {
     return this.#pointsModel.destinations;
   }
 
+  init = () => {
+    this.#renderList();
+
+  };
+
   createPoint = (callback) => {
-    this.#currentSortType = SORT_TYPE.DAY;
-    this.#filterModel.setFilter(UPDATE_TYPE.MAJOR, FILTER_TYPE.EVERYTHING);
+    this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#pointNewPresenter.init(callback, this.offers, this.destinations);
   };
 
@@ -88,7 +88,7 @@ export default class TripPresenter {
     this.#uiBlocker.block();
 
     switch (actionType) {
-      case USER_ACTION.UPDATE_POINT:
+      case UserAction.UPDATE_POINT:
         this.#pointPresenter.get(update.id).setSaving();
         try {
           await this.#pointsModel.updatePoint(updateType, update);
@@ -96,7 +96,7 @@ export default class TripPresenter {
           this.#pointPresenter.get(update.id).setAborting();
         }
         break;
-      case USER_ACTION.ADD_POINT:
+      case UserAction.ADD_POINT:
         this.#pointNewPresenter.setSaving();
         try {
           await this.#pointsModel.addPoint(updateType, update);
@@ -105,7 +105,7 @@ export default class TripPresenter {
           this.#pointNewPresenter.setAborting();
         }
         break;
-      case USER_ACTION.DELETE_POINT:
+      case UserAction.DELETE_POINT:
         this.#pointPresenter.get(update.id).setDeleting();
         try {
           await this.#pointsModel.deletePoint(updateType, update);
@@ -120,21 +120,21 @@ export default class TripPresenter {
   #handleModelEvent = (updateType, data) => {
     // В зависимости от типа изменений решаем, что делать:
     switch (updateType) {
-      case UPDATE_TYPE.PATCH:
+      case UpdateType.PATCH:
         // - обновить часть списка (например, когда поменялось описание)
         this.#pointPresenter.get(data.id).init(data);
         break;
-      case UPDATE_TYPE.MINOR:
+      case UpdateType.MINOR:
         // - обновить список (например, когда задача ушла в архив)
         this.#clearList();
         this.#renderList();
         break;
-      case UPDATE_TYPE.MAJOR:
+      case UpdateType.MAJOR:
         // - обновить всю доску (например, при переключении фильтра)
         this.#clearList({resetSortType: true});
         this.#renderList();
         break;
-      case UPDATE_TYPE.INIT:
+      case UpdateType.INIT:
         this.#isLoading = false;
         remove(this.#loadingComponent);
         this.#renderList();
@@ -159,9 +159,9 @@ export default class TripPresenter {
 
   #sortPoints = (sortType) => {
     switch (sortType) {
-      case SORT_TYPE.TIME:
+      case SortType.TIME:
         break;
-      case SORT_TYPE.PRICE:
+      case SortType.PRICE:
         break;
       default:
     }
@@ -222,7 +222,7 @@ export default class TripPresenter {
 
 
     if (resetSortType) {
-      this.#currentSortType = SORT_TYPE.DAY;
+      this.#currentSortType = SortType.DAY;
     }
   };
 

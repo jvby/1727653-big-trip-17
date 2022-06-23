@@ -1,5 +1,5 @@
 import Observable from '../framework/observable.js';
-import {UPDATE_TYPE} from '../const.js';
+import {UpdateType} from '../const.js';
 
 
 export default class PointsModel extends Observable{
@@ -40,7 +40,7 @@ export default class PointsModel extends Observable{
       this.#offers = [];
       this.#destinations = [];
     }
-    this._notify(UPDATE_TYPE.INIT);
+    this._notify(UpdateType.INIT);
   };
 
   #adaptToClient = (point) => {
