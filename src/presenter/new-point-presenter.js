@@ -44,8 +44,6 @@ export default class PointNewPresenter {
       return;
     }
 
-    console.log(BLANK_POINT);
-
     this.#destroyCallback?.();
 
     remove(this.#pointEditComponent);

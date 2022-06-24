@@ -1,6 +1,6 @@
 import {humanizePointDate} from '../utils.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import {TYPES, BLANK_POINT} from '../const.js';
+import {TYPES} from '../const.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import he from 'he';
@@ -271,15 +271,18 @@ export default class PointEditView extends AbstractStatefulView{
   #offerChangeHandler = (evt) => {
 
     const offerID = parseInt(evt.target.value, 10);
+    let newOffers = [...this._state.offers];
 
     if (this._state.offers.includes(offerID)) {
-      this._state.offers = this._state.offers.filter((offer) => offer !== offerID);
+      newOffers = this._state.offers.filter((offer) => offer !== offerID);
       return;
     }
 
-    this._state.offers.push(offerID);
-    console.log(BLANK_POINT);
-    console.log(this._state);
+    newOffers.push(offerID);
+
+    this.updateElement({
+      offers: newOffers
+    });
 
   };
 
